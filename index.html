@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nisanur'a Özel</title>
+<style>
+    body { margin: 0; font-family: 'Arial', sans-serif; background-color: #0d0d0d; color: #fff; overflow-x: hidden; }
+    .container { text-align: center; padding: 50px 20px; }
+    button { padding: 12px 24px; margin: 10px; border-radius: 8px; background-color: #e91e63; border: none; color: #fff; font-size: 16px; cursor: pointer; }
+    .hidden { display: none; }
+    .option-btn { display: block; margin: 8px auto; padding: 10px 18px; background-color: #333; border-radius: 6px; border: 1px solid #fff; color: #fff; cursor: pointer; max-width: 300px; }
+    textarea { width: 80%; max-width: 400px; height: 100px; border-radius: 8px; padding: 10px; margin-top: 15px; }
+</style>
+</head>
+<body>
+
+<audio id="music" src="nazende_sevgilim.mp3" loop></audio>
+
+<div class="container" id="start">
+    <h1>Sen üzülünce tüm dünyam soluyor...<br>Gülüşünü çok özledim...</h1>
+    <button onclick="startExperience()">Başla</button>
+</div>
+
+<div class="container hidden" id="menu">
+    <h2>Ne yapmak istersin?</h2>
+    <button onclick="showQuiz()">🎮 Soru Cevap</button>
+    <button onclick="showMessages()">💖 Güzel Cümleler</button>
+    <button onclick="showPoem()">📜 Şiir</button>
+    <button onclick="showDreams()">🌙 Hayallerimiz</button>
+    <button onclick="showFuture()">✉️ Geleceğe Mesaj</button>
+    <button onclick="showCompliments()">🌹 Sana Söylemek İstediklerim</button>
+</div>
+
+<!-- Soru-Cevap -->
+<div class="container hidden" id="quiz">
+    <h2>Romantik Soru Cevap</h2>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Romantik Mesajlar -->
+<div class="container hidden" id="messages">
+    <h2>Her Tıkta Bir Güzellik</h2>
+    <button onclick="showNextMessage()">Tıkla ❤️</button>
+    <div id="message" style="margin-top:20px; font-size:18px;"></div>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Şiir -->
+<div class="container hidden" id="poem">
+    <h2>Romantik Şiirimiz</h2>
+    <div style="white-space: pre-wrap; margin-top:20px; font-size:18px;" id="poemText"></div>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Hayallerimiz -->
+<div class="container hidden" id="dreams">
+    <h2>Hayallerimiz</h2>
+    <div id="dreamText" style="margin-top:20px; font-size:18px;"></div>
+    <button onclick="showNextDream()">Sonraki 🌙</button>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Geleceğe Mesaj -->
+<div class="container hidden" id="future">
+    <h2>Gelecekte kendimize bir not bırak 🌸</h2>
+    <textarea id="futureMessage" placeholder="Buraya yaz..."></textarea><br>
+    <button onclick="saveFutureMessage()">Kaydet ❤️</button>
+    <div id="savedMessage" style="margin-top:15px; font-size:16px; color: lightgreen;"></div>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Sana Söylemek İstediklerim -->
+<div class="container hidden" id="compliments">
+    <h2>Sana Söylemek İstediklerim</h2>
+    <div id="complimentText" style="margin-top:20px; font-size:18px;"></div>
+    <button onclick="showNextCompliment()">Bir tane daha ❤️</button>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<!-- Final Mesajı -->
+<div class="container hidden" id="final">
+    <h1 style="font-size: 26px;">Nisanurum...<br><br>
+    Bazen kelimeler yetmez ya hani... Benim sana olan sevgim de öyle işte. Sana her gün yeniden aşık oluyorum. Gözlerine her baktığımda "işte benim cennetim" diyorum. Ne yaşarsak yaşayalım, kalbimin tek sahibi sensin. Ve sana söz: Her gün seni tekrar kazanacağım. Çünkü ben SENİ sadece SEVMEDİM… Seni her şeyim yaptım.<br><br>
+    Ve bu hikayenin son sorusu cevapsız kaldı... Çünkü asıl cevabı: Kalbimde saklı... 💖</h1>
+    <button onclick="backToMenu()">🔙 Menüye Dön</button>
+</div>
+
+<script>
+const music = document.getElementById("music");
+
+function startExperience() {
+    music.play();
+    showMenu();
+}
+
+const questions = [
+    { q: "Benim için en güzel manzara neresi?", options: ["Kirpiklerin kalkınca başlıyor", "Güneşin batışı", "Deniz kenarı"], a: "Kirpiklerin kalkınca başlıyor" },
+    { q: "En sevdiğim şarkı ne?", options: ["Senin sesin", "Nazende Sevgilim", "Benim gözlerim"], a: "Senin sesin" },
+    { q: "Seni ilk gördüğümde ne düşündüm?", options: ["bu kız benim", "Ne güzel gülüyor", "Tanıdık geldi"], a: "bu kız benim" },
+    { q: "Kalbimin en huzurlu yeri neresi?", options: ["Senin yanın", "Evimiz", "Anılarımız"], a: "Senin yanın" },
+    { q: "En sevdiğim kahvaltı nedir?", options: ["Gözlerinle uyanmak", "Menemen", "Peynir zeytin"], a: "Gözlerinle uyanmak" },
+    { q: "Gözlerin bana neyi hatırlatıyor?", options: ["Gökyüzünde kaybolmayı", "Çocukluğumu", "Sessizliği"], a: "Gökyüzünde kaybolmayı" },
+    { q: "Hayalimdeki yolculuk nereye?", options: ["Seninle her yer cennet", "Paris", "Karadeniz turu"], a: "Seninle her yer cennet" },
+    { q: "Seni anlatan tek kelime?", options: ["Cennet", "Güzellik", "Canım"], a: "Cennet" },
+    { q: "İlk sarıldığımız an nerede?", options: ["Bankta otururken", "kurs çıkışı", "Köşe başında"], a: "kurs çıkışı" },
+    { q: "Beraber en çok ne yapmayı seviyoruz?", options: ["Gülmek", "Kavga etmek", "birbirimizi yemek"], a: "birbirimizi yemek" },
+    { q: "En romantik anımız nerede geçti?", options: ["sınıfta", "Doğum gününde", "okulda film izlerken"], a: "sınıfta" },
+    { q: "Bana söylediğin en güzel söz?", options: ["sadece benimsin be adam", "kocammmmm", "yakışılımm"], a: "sadece benimsin be adam" },
+    { q: "En güzel fotoğrafımız nerede çekildi?", options: ["okul", "sınıf", "spor salonu"], a: "spor salonu" },
+    { q: "Benim için en değerli eşyam ne?", options: ["Senin fotoğrafın", "Saatim", "Kolye"], a: "Senin fotoğrafın" },
+    { q: "Aşkı en çok hissettiğimiz an?", options: ["Senle öpüştüğüm zaman", "Telefonla konuşurken", "Mesaj yazarken"], a: "Senle öpüştüğüm zaman" },
+    { q: "İlk defa seni gördüğümde hangi şarkı çalıyordu?", options: ["Gözlerin", "Nazende Sevgilim", "Sessizlik"], a: "Nazende Sevgilim" },
+    { q: "Sana söylemekten bıkmadığım şey?", options: ["Seni seviyorum", "Sen benim kaderimsin", "Seninle sonsuza kadar"], a: "Seni seviyorum" },
+    { q: "En çok gitmek istediğimiz yer?", options: ["bizim evimiz", "aile evi", "yatak"], a: "bizim evimiz" },
+    { q: "İçimdeki en büyük hayal?", options: ["Seninle bir ömür", "Dünya turu", "Büyük ev"], a: "Seninle bir ömür" },
+    { q: "Hayatımın en güzel günü?", options: ["Seni tanıdığım gün", "Doğum günüm", "İlk tatilimiz"], a: null }
+];
+
+const wrongResponses = [
+    "Yanlış ama sana küsemem.",
+    "Olmadı ama seni çok seviyorum.",
+    "Aşkın her hatayı affettirir.",
+    "Yanlış yaptın ama kalbimdeki yerin değişmez.",
+    "Bilemedin ama önemli değil, sen varsın ya!",
+    "Hata yaptın ama yine de en güzel sen bakıyorsun."
+];
+
+const romanticMessages = [
+    "Gülümse, çünkü o gülüş benim cennetim.",
+    "Sen gülünce dünya bile dönmeyi unutuyor…",
+    "Her şey geçer ama SEN kalırsın.",
+    "Gözlerin olmasa ben kimim ki?",
+    "Ben senin gözlerinde kaybolmayı seviyorum.",
+    "Sen benim en güzel alışkanlığımsın.",
+    "Ömrüm, senin gülüşüne bağlı.",
+    "Sen kokunca dünya güzelleşiyor."
+];
+
+const poemText = `Gözlerinde saklı sonsuz bir düş,
+Kalbimde yankılanır o masum gülüş.
+Bir ömür değil, bin ömür verseler,
+Ben yine seninle baştan başlarım, bilirsin.
+
+Kirpiklerinde gece, dudaklarında ay,
+Sensiz geçen an, ne tadı var ne ray.
+Adın bir dua gibi her nefesimde,
+Seninle başlar, seninle biter her hevesimde.
+
+Gözlerin derya, ben kayıp bir ada,
+Tut elimden, sür beni sonsuzlukta.
+Aşkın adını yazdım kalbimin duvarına,
+Silinmez, kazındı yıldızlarla sana.
+
+Bir gülüşünle bahar olur kış,
+Özlemin ateş, tenin ise su gibi yumuşak.
+Bir ömrü değil, cenneti bile yakarım,
+Yeter ki “Ben de seni seviyorum” de bana.
+
+Sen benim şiirim, sen benim ezgim,
+Dizeler sensiz yetim, kafiyeler eksik.
+Dünyam seninle tamam, sensiz hep yarım,
+Kalbimin tek sahibi, sonsuz aşkım.
+
+`;
+
+const dreams = [
+    "O geceyi tekrar tekrar yaşamak.",
+    "Birlikte yıldızlara bakıp dilek tutmak.",
+    "Bir gün o bankta yeniden oturmak.",
+    "Seninle dünyayı gezmek.",
+    "Göz göze uyumak.",
+    "Birlikte kar yağarken sokakta yürümek.",
+    "Kendi evimizde kahve içmek.",
+    "Gizlice gece dışarı çıkıp şehri keşfetmek.",
+    "Seninle eski şarkılar dinleyerek dans etmek.",
+    "O geceyle başlayan sonsuz bir hikaye yazmak."
+];
+
+const compliments = [
+    "Sana bakınca dünyanın bütün güzellikleri anlamsız kalıyor.",
+    "Sen benim ömrümün en güzel cümlesisin.",
+    "Gözlerin, içinden çıkmak istemediğim bir masal.",
+    "Sana sarılınca dünya durmuş gibi oluyor.",
+    "Seninle her şey anlamlı, sensiz her şey eksik.",
+    "Gözlerine bakınca ‘aşk’ kelimesi anlam buluyor.",
+    "Sadece sen varsın, diğerleri figüran."
+];
+
+let currentQ = 0, msgIndex = 0, complimentIndex = 0, dreamIndex = 0;
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function showMenu() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('menu').classList.remove('hidden');
+}
+
+function showQuiz() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('quiz').classList.remove('hidden');
+    currentQ = 0;
+    nextQuestion();
+}
+
+function nextQuestion() {
+    if (currentQ >= questions.length) return showFinal();
+    const q = questions[currentQ];
+    document.getElementById('question').innerHTML = `<h3>${q.q}</h3>`;
+    const shuffledOptions = shuffle([...q.options]);
+    document.getElementById('options').innerHTML = shuffledOptions.map(opt => `<button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>`).join('');
+    document.getElementById('feedback').innerHTML = '';
+}
+
+function checkAnswer(selected) {
+    const q = questions[currentQ];
+    if (q.a && selected === q.a) {
+        document.getElementById('feedback').innerHTML = '<p style="color:lightgreen;">Doğru ❤️</p>';
+        currentQ++;
+        setTimeout(nextQuestion, 1000);
+    } else if (q.a === null) {
+        showFinal();
+    } else {
+        const response = wrongResponses[Math.floor(Math.random() * wrongResponses.length)];
+        document.getElementById('feedback').innerHTML = `<p style="color:orange;">${response}</p>`;
+    }
+}
+
+function showMessages() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('messages').classList.remove('hidden');
+}
+
+function showNextMessage() {
+    document.getElementById('message').innerText = romanticMessages[msgIndex % romanticMessages.length];
+    msgIndex++;
+}
+
+function showPoem() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('poem').classList.remove('hidden');
+    document.getElementById('poemText').innerText = poemText;
+}
+
+function showDreams() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('dreams').classList.remove('hidden');
+    showNextDream();
+}
+
+function showNextDream() {
+    document.getElementById('dreamText').innerText = dreams[dreamIndex % dreams.length];
+    dreamIndex++;
+}
+
+function showCompliments() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('compliments').classList.remove('hidden');
+    document.getElementById('complimentText').innerText = compliments[complimentIndex % compliments.length];
+    complimentIndex++;
+}
+
+function showNextCompliment() {
+    document.getElementById('complimentText').innerText = compliments[complimentIndex % compliments.length];
+    complimentIndex++;
+}
+
+function showFuture() {
+    document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.getElementById('future').classList.remove('hidden');
+}
+
+function saveFutureMessage() {
+    const text = document.getElementById('futureMessage').value.trim();
+    if (text !== "") {
+        document.getElementById('savedMessage').innerText = "Kaydedildi: " + text;
+        document.getElementById('futureMessage').value = "";
+    } else {
+        document.getElementById('savedMessage').innerText = "Bir şey yazmalısın.";
+    }
+}
+
+function showFinal() {
+    document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+    document.getElementById('final').classList.remove('hidden');
+}
+
+function backToMenu() {
+    showMenu();
+}
+</script>
+
+</body>
+</html>
